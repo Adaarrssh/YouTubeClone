@@ -21,7 +21,7 @@ const Loader = () => {
           />
 
           {/* Channel Skeleton */}
-          <Skeleton
+          <Skeletonn
             variant="text"
             width="60%"
             height={25}
