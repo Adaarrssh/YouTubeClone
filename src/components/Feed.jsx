@@ -6,14 +6,27 @@ import { Videos, Sidebar } from "./";
 
 const Feed = () => {
   const [selectedCategory, setSelectedCategory] = useState("New");
-  const [videos, setVideos] = useState(null);
+  const [videos, setVideos] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
-    setVideos(null);
+    setLoading(true);
+    setError(false);
 
-    fetchFromAPI(`search?part=snippet&q=${selectedCategory}`).then((data) =>
-      setVideos(data.items)
-    );
+    fetchFromAPI(
+      `search?part=snippet&q=${selectedCategory}&type=video&maxResults=20`,
+    )
+      .then((data) => {
+        setVideos(data.items || []);
+      })
+      .catch((err) => {
+        console.error(err);
+        setError(true);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, [selectedCategory]);
 
   return (
@@ -47,7 +60,17 @@ const Feed = () => {
           {selectedCategory} <span style={{ color: "#FC1503" }}>videos</span>
         </Typography>
 
-        <Videos videos={videos} />
+        {loading ? (
+          <Typography sx={{ color: "white", mt: 5 }}>
+            Loading videos...
+          </Typography>
+        ) : error ? (
+          <Typography sx={{ color: "red", mt: 5 }}>
+            Failed to load videos.
+          </Typography>
+        ) : (
+          <Videos videos={videos} />
+        )}
       </Box>
     </Stack>
   );

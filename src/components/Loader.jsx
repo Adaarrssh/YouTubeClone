@@ -1,17 +1,36 @@
 import React from "react";
-import { Box, CircularProgress, Stack } from "@mui/material";
+import { Box, Skeleton, Stack } from "@mui/material";
 
-const Loader = () => (
-  <Box minHeight="95vh">
-    <Stack
-      direction="row"
-      justifyContent="center"
-      alignItems="center"
-      height="80vh"
-    >
-      <CircularProgress />
+const Loader = () => {
+  return (
+    <Stack direction="row" flexWrap="wrap" justifyContent="start" gap={2}>
+      {Array.from({ length: 12 }).map((_, index) => (
+        <Box key={index} width={{ xs: "100%", sm: "358px", md: "320px" }}>
+          {/* Thumbnail Skeleton */}
+          <Skeleton
+            variant="rectangular"
+            width="100%"
+            height={180}
+            sx={{ borderRadius: 2, bgcolor: "#2d2d2d" }}
+          />
+          <Skeleton
+            variant="text"
+            width="90%"
+            height={35}
+            sx={{ mt: 1, bgcolor: "#2d2d2d" }}
+          />
+
+          {/* Channel Skeleton */}
+          <Skeleton
+            variant="text"
+            width="60%"
+            height={25}
+            sx={{ bgcolor: "#2d2d2d" }}
+          />
+        </Box>
+      ))}
     </Stack>
-  </Box>
-);
+  );
+};
 
 export default Loader;

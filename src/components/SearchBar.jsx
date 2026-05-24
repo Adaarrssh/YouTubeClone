@@ -1,26 +1,42 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Paper, IconButton } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 
 const SearchBar = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedTerm, setDebouncedTerm] = useState("");
+
   const navigate = useNavigate();
 
-  const onhandleSubmit = (e) => {
+  // Debounce Logic
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedTerm(searchTerm);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
+
+  // Auto Navigate After Debounce
+  useEffect(() => {
+    if (debouncedTerm.trim()) {
+      navigate(`/search/${debouncedTerm}`);
+    }
+  }, [debouncedTerm, navigate]);
+
+  const onHandleSubmit = (e) => {
     e.preventDefault();
 
-    if (searchTerm) {
+    if (searchTerm.trim()) {
       navigate(`/search/${searchTerm}`);
-
-      setSearchTerm("");
     }
   };
 
   return (
     <Paper
       component="form"
-      onSubmit={onhandleSubmit}
+      onSubmit={onHandleSubmit}
       sx={{
         borderRadius: 20,
         border: "1px solid #e3e3e3",
@@ -35,6 +51,7 @@ const SearchBar = () => {
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
       />
+
       <IconButton
         type="submit"
         sx={{ p: "10px", color: "red" }}
